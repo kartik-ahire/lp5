@@ -75,6 +75,7 @@ void Search::bfs()
     queue<Node *> q;
     q.push(root);
 
+    double startTime = omp_get_wtime();
     while (!q.empty())
     {
         int qSize = q.size();
@@ -101,6 +102,9 @@ void Search::bfs()
             }
         }
     }
+    double endTime = omp_get_wtime();
+    cout << "";
+    cout << "Time required for bfs: " << endTime - startTime << endl;
 }
 
 void Search::dfs()
@@ -113,7 +117,7 @@ void Search::dfs()
 
     stack<Node *> s;
     s.push(root);
-
+    double startTime = omp_get_wtime();
     while (!s.empty())
     {
         Node *currNode;
@@ -134,6 +138,9 @@ void Search::dfs()
                 s.push(currNode->left);
         }
     }
+    double endTime = omp_get_wtime();
+    cout << "";
+    cout << "Time required for dfs: " << endTime - startTime << endl;
 }
 
 int main()
