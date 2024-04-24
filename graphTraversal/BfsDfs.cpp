@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <stack>
 #include <omp.h>
 using namespace std;
 
@@ -13,18 +14,19 @@ public:
     Node(int data) : data(data), left(nullptr), right(nullptr) {}
 };
 
-class BFS
+class Search
 {
 private:
     Node *root;
 
 public:
-    BFS() : root(nullptr) {}
+    Search() : root(nullptr) {}
     void createTree(); // Function to manually create the tree structure
     void bfs();
+    void dfs();
 };
 
-void BFS::createTree()
+void Search::createTree()
 {
     int rootData;
     cout << "Enter the root value: ";
@@ -41,7 +43,6 @@ void BFS::createTree()
 
         int leftData, rightData;
         cout << "Enter left child value of " << currNode->data << " (-1 if none): ";
-#pragma omp critical
         cin >> leftData;
 
         if (leftData != -1)
@@ -52,7 +53,6 @@ void BFS::createTree()
         }
 
         cout << "Enter right child value of " << currNode->data << " (-1 if none): ";
-#pragma omp critical
         cin >> rightData;
 
         if (rightData != -1)
@@ -64,7 +64,7 @@ void BFS::createTree()
     }
 }
 
-void BFS::bfs()
+void Search::bfs()
 {
     if (!root)
     {
@@ -91,27 +91,68 @@ void BFS::bfs()
 
             cout << currNode->data << "\t";
 
-            if (currNode->left)
 #pragma omp critical
-                q.push(currNode->left);
+            {
+                if (currNode->left)
+                    q.push(currNode->left);
 
-            if (currNode->right)
+                if (currNode->right)
+                    q.push(currNode->right);
+            }
+        }
+    }
+}
+
+void Search::dfs()
+{
+    if (!root)
+    {
+        cout << "Tree is empty\n";
+        return;
+    }
+
+    stack<Node *> s;
+    s.push(root);
+
+    while (!s.empty())
+    {
+        Node *currNode;
 #pragma omp critical
-                q.push(currNode->right);
+        {
+            currNode = s.top();
+            s.pop();
+        }
+
+        cout << currNode->data << "\t";
+
+#pragma omp critical
+        {
+            if (currNode->right)
+                s.push(currNode->right);
+
+            if (currNode->left)
+                s.push(currNode->left);
         }
     }
 }
 
 int main()
 {
-    BFS tree;
+    Search tree;
     tree.createTree();
+
+    cout << "BFS traversal:\n";
     tree.bfs();
+    cout << "\n\n";
+
+    cout << "DFS traversal:\n";
+    tree.dfs();
+
     return 0;
 }
 
 /*
 Run Commands:
-1) g++ -fopenmp BFS.cpp –o bfs
-2) ./bfs
+1) g++ -fopenmp Search.cpp -o search
+2) ./search
 */

@@ -2,10 +2,13 @@
 #include <vector>
 #include <stack>
 #include <omp.h>
+
 using namespace std;
+
 const int MAX = 100000;
 vector<int> graph[MAX];
 bool visited[MAX];
+
 void dfs(int node)
 {
     stack<int> s;
@@ -33,6 +36,7 @@ void dfs(int node)
         }
     }
 }
+
 int main()
 {
     int n, m, start_node;
