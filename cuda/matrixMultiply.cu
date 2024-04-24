@@ -59,3 +59,9 @@ int main()
     cudaFreeHost(C);
     return 0;
 }
+
+/*
+if gpu present
+nvcc hello_world.cu -o hello_world
+./hello_world
+*/
